@@ -1,0 +1,25 @@
+services:
+  # db:
+  #   image: postgres:16
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_PASSWORD: example
+  #   ports:
+  #     - "5432:5432"
+
+  # keydb:
+  #   image: eqalpha/keydb
+  #   restart: unless-stopped
+  #   command: "keydb-server --requirepass ${KEYDB_PASSWORD}"
+  #   ports:
+  #     - "6379:6379"
+  #   env_file:
+  #     - ".env"
+
+  db_new:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5431:5432"
