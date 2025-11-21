@@ -25,5 +25,5 @@ export const itemsSchema = object({
 
 export const createItemsSchema = omit(itemsSchema, ['id', 'createdAt']);
 
-export type ItemDto = InferInput<typeof itemsSchema>;
-export type CreateItemDto = InferInput<typeof createItemsSchema>;
+export type ItemDto = typeof items.$inferSelect;
+export type CreateItemDto = typeof items.$inferInsert;

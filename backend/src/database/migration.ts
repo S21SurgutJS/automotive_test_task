@@ -22,7 +22,7 @@ async function run() {
     coloredLog('yellow', 'Connection opened');
     const db = drizzle(client);
     coloredLog('yellow', 'Try migrations');
-    await migrate(db, { migrationsFolder: 'migrations' });
+    await migrate(db, { migrationsFolder: 'src/database/migrations' });
     coloredLog('green', 'Migrations status - Success');
   } catch (error) {
     coloredLog('red', 'Migrations status - Failed');

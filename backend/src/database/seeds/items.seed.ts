@@ -1,8 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { items } from '../items/entities/item.entity';
+import { items } from 'src/items/entities/item.entity';
 import { count, sql } from 'drizzle-orm';
 import { Client } from 'pg';
-import Config from '../../drizzle.config';
+import Config from '../../../drizzle.config';
 import { CreateItemDto } from 'src/items/dto/create-item.dto';
 // import postgres from 'postgres';
 
@@ -11,8 +11,6 @@ const BATCH_SIZE = 1000;
 
 async function seed() {
   console.log('🌱 Начинаем заполнение базы данных...');
-
-  // const connectionString = `postgresql://${process.env.DB_USERNAME || 'postgres'}:${process.env.DB_PASSWORD || 'postgres'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'items_db'}`;
 
   const client = new Client({ ...Config.dbCredentials });
 

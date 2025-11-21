@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateItemDto } from './dto/create-item.dto';
+import { ItemDto } from './dto/create-item.dto';
+import { ItemsRepository } from './items.repository';
+import { QueryItemsDto } from './dto/query-items.dto';
 
 @Injectable()
 export class ItemsService {
-  create(createItemDto: CreateItemDto) {
-    return 'This action adds a new item';
-  }
+  constructor(private readonly itemsRepository: ItemsRepository) {}
 
-  findAll() {
-    return `This action returns all items`;
+  async findAll(queryDto: QueryItemsDto): Promise<ItemDto[]> {
+    const { limit = 10, offset = 0 } = queryDto;
+
+    return this.itemsRepository.findMany(limit, offset);
   }
 }

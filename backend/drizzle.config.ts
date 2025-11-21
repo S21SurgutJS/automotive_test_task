@@ -15,7 +15,7 @@ import config from './config';
 
 export default {
   dialect: 'postgresql',
-  schema: './src/**/*.entity.ts',
+  schema: './src/database/schema.ts',
   dbCredentials: {
     host: config.dbHost,
     port: +config.dbPort,
@@ -23,7 +23,7 @@ export default {
     user: config.dbUser,
     password: config.dbPassword,
   },
-  out: './migrations',
+  out: './src/database/migrations',
   verbose: true,
   strict: true,
 } satisfies Config;

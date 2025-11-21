@@ -17,7 +17,7 @@
     "migration:create": "drizzle-kit generate --config=drizzle.config.ts $npm_config_name",
     "migration:custom": "drizzle-kit generate --custom --config=drizzle.config.ts $npm_config_name",
     "migration:introspect": "drizzle-kit introspect:pg",
-    "migration:push": "ts-node migration.ts",
+    "migration:push": "ts-node src/database/migration.ts",
     "migration:drop": "drizzle-kit drop",
     "db:studio": "drizzle-kit studio"
   },
