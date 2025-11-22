@@ -1,9 +1,9 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { items } from 'src/items/entities/item.entity';
+import { items } from '../../items/entities/item.entity';
 import { count, sql } from 'drizzle-orm';
 import { Client } from 'pg';
 import Config from '../../../drizzle.config';
-import { CreateItemDto } from 'src/items/dto/create-item.dto';
+import { CreateItemDto } from '../../items/dto/create-item.dto';
 // import postgres from 'postgres';
 
 const TOTAL_ITEMS = 50000;

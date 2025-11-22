@@ -1,11 +1,27 @@
-<script setup lang="ts"></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="container">
+    <AppHeader />
+
+    <div class="content">
+      <TestForm
+        :is-running="isRunning"
+        v-model:requests-count="requestsCount"
+        v-model:delay-ms="delayMs"
+        @start-test="startLoadTest"
+        @stop-test="stopLoadTest"
+      />
+
+      <TestStats :stats="stats" :formatted-time="formatTime(stats.elapsedTime)" />
+    </div>
+  </div>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { useLoadTest } from '@/composables/useLoadTest'
+import AppHeader from '@/components/AppHeader.vue'
+import TestForm from '@/components/TestForm.vue'
+import TestStats from '@/components/TestStats.vue'
+
+const { requestsCount, delayMs, isRunning, stats, startLoadTest, stopLoadTest, formatTime } =
+  useLoadTest()
+</script>

@@ -22,6 +22,7 @@ export default {
     database: config.dbName,
     user: config.dbUser,
     password: config.dbPassword,
+    ssl: false,
   },
   out: './src/database/migrations',
   verbose: true,
