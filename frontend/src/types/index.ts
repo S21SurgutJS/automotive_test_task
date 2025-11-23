@@ -24,9 +24,14 @@ export interface RequestResult {
   success: boolean
 }
 
+/**
+ * Событие прогресса теста
+ */
 export interface ProgressEvent {
   type: 'sent' | 'success' | 'error'
 }
+
+export type ProgressCallback = (event: ProgressEvent) => void
 
 export type StatCardType = 'sent' | 'success' | 'error' | 'time'
 

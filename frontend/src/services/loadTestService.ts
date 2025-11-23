@@ -20,35 +20,37 @@ export class LoadTestService {
     this.abortController = new AbortController()
     const { requestsCount, delayMs } = config
 
+    const requests: Promise<void>[] = []
+
     try {
       for (let i = 0; i < requestsCount; i++) {
         if (this.abortController.signal.aborted) {
           break
         }
-
         onProgress({ type: 'sent' })
 
-        try {
-          const result = await this.sendSingleRequest(this.abortController.signal)
+        const requestPromise = this.sendSingleRequest(this.abortController.signal)
+          .then((result) => {
+            if (result.success) {
+              onProgress({ type: 'success' })
+            } else {
+              onProgress({ type: 'error' })
+            }
+          })
+          .catch((error) => {
+            if (!(error instanceof Error && error.name === 'AbortError')) {
+              onProgress({ type: 'error' })
+            }
+          })
 
-          // Уведомляем о результате
-          if (result.success) {
-            onProgress({ type: 'success' })
-          } else {
-            onProgress({ type: 'error' })
-          }
-        } catch (error) {
-          if (error instanceof Error && error.name === 'AbortError') {
-            break
-          }
-          onProgress({ type: 'error' })
-        }
+        requests.push(requestPromise)
 
-        // Задержка перед следующим запросом
         if (i < requestsCount - 1 && delayMs > 0) {
           await this.delay(delayMs)
         }
       }
+
+      await Promise.allSettled(requests)
     } catch (error) {
       console.error('Load test error:', error)
       throw error

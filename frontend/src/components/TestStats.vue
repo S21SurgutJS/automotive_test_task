@@ -6,8 +6,6 @@
       <StatCard label="Ошибки" :value="stats.error" type="error" />
       <StatCard label="Время" :value="formattedTime" type="time" />
     </div>
-
-    <StatsSummary v-if="stats.sent > 0" />
   </div>
 </template>
 

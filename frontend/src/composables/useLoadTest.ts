@@ -6,20 +6,17 @@ import type { LoadTestStats, ProgressEvent } from '@/types'
  * Composable для работы с нагрузочным тестом
  */
 export interface UseLoadTestReturn {
-  // State
   requestsCount: Ref<number>
   delayMs: Ref<number>
   isRunning: Ref<boolean>
   stats: Ref<LoadTestStats>
 
-  // Methods
   startLoadTest: () => Promise<void>
   stopLoadTest: () => void
   formatTime: (ms: number) => string
 }
 
 export function useLoadTest(): UseLoadTestReturn {
-  // Reactive state
   const requestsCount = ref<number>(100)
   const delayMs = ref<number>(100)
   const isRunning = ref<boolean>(false)
@@ -35,7 +32,6 @@ export function useLoadTest(): UseLoadTestReturn {
   let timer: number | null = null
   const loadTestService = new LoadTestService()
 
-  // Вспомогательные функции
   const startTimer = (): void => {
     timer = window.setInterval(() => {
       if (stats.value.startTime !== null) {
@@ -90,10 +86,8 @@ export function useLoadTest(): UseLoadTestReturn {
     } catch (error) {
       console.error('Load test error:', error)
     } finally {
-      setTimeout(() => {
-        isRunning.value = false
-        stopTimer()
-      }, 1000)
+      isRunning.value = false
+      stopTimer()
     }
   }
 
