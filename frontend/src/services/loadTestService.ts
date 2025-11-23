@@ -1,6 +1,8 @@
 import { loadTestApi } from '@/api/loadTestApi'
 import type { LoadTestConfig, RequestResult, ProgressCallback } from '@/types'
 
+const BATCH_SIZE = 50
+
 export class LoadTestService {
   private abortController: AbortController | null = null
 
@@ -20,37 +22,52 @@ export class LoadTestService {
     this.abortController = new AbortController()
     const { requestsCount, delayMs } = config
 
-    const requests: Promise<void>[] = []
+    const batches = Math.ceil(requestsCount / BATCH_SIZE)
 
     try {
-      for (let i = 0; i < requestsCount; i++) {
+      for (let batchIndex = 0; batchIndex < batches; batchIndex++) {
         if (this.abortController.signal.aborted) {
           break
         }
-        onProgress({ type: 'sent' })
 
-        const requestPromise = this.sendSingleRequest(this.abortController.signal)
-          .then((result) => {
-            if (result.success) {
-              onProgress({ type: 'success' })
-            } else {
-              onProgress({ type: 'error' })
-            }
-          })
-          .catch((error) => {
-            if (!(error instanceof Error && error.name === 'AbortError')) {
-              onProgress({ type: 'error' })
-            }
-          })
+        const batchStart = batchIndex * BATCH_SIZE
+        const batchEnd = Math.min(batchStart + BATCH_SIZE, requestsCount)
+        const batchRequests: Promise<void>[] = []
 
-        requests.push(requestPromise)
+        for (let i = batchStart; i < batchEnd; i++) {
+          if (this.abortController.signal.aborted) {
+            break
+          }
 
-        if (i < requestsCount - 1 && delayMs > 0) {
-          await this.delay(delayMs)
+          onProgress({ type: 'sent' })
+
+          const requestPromise = this.sendSingleRequest(this.abortController.signal)
+            .then((result) => {
+              if (result.success) {
+                onProgress({ type: 'success' })
+              } else {
+                onProgress({ type: 'error' })
+              }
+            })
+            .catch((error) => {
+              if (!(error instanceof Error && error.name === 'AbortError')) {
+                onProgress({ type: 'error' })
+              }
+            })
+
+          batchRequests.push(requestPromise)
+
+          if (delayMs > 0 && i < batchEnd - 1) {
+            await this.delay(delayMs)
+          }
+        }
+
+        await Promise.allSettled(batchRequests)
+
+        if (batchIndex < batches - 1) {
+          await this.delay(Math.max(delayMs, 5))
         }
       }
-
-      await Promise.allSettled(requests)
     } catch (error) {
       console.error('Load test error:', error)
       throw error
